@@ -141,6 +141,10 @@ row = {
     "state_or_international": state_or_international,
 }
 
+st.write("Selected university:", university)
+st.write("University row used:", uni_row)
+
+
 
 # Add university numeric features to the row
 # (keeps ALL columns from the CSV as features)
