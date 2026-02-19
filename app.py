@@ -17,6 +17,61 @@ model = joblib.load("admissions_model.joblib")
 with open("model_columns.json", "r") as f:
     model_cols = json.load(f)
 
+st.header("Batch prediction (CSV)")
+
+uploaded_file = st.file_uploader(
+    "Upload a CSV of student rows (any extra columns will be ignored).",
+    type=["csv"]
+)
+
+if uploaded_file is not None:
+    df_in = pd.read_csv(uploaded_file)
+
+    st.subheader("Preview")
+    st.dataframe(df_in.head())
+
+    # --- Align to training columns ---
+    X = df_in.copy()
+
+    # Drop extra cols not used by the model
+    extra = [c for c in X.columns if c not in model_cols]
+    if extra:
+        st.info(f"Ignoring extra columns not used by the model: {extra[:15]}" + (" ..." if len(extra) > 15 else ""))
+        X = X.drop(columns=extra)
+
+    # Add missing cols expected by model
+    missing = [c for c in model_cols if c not in X.columns]
+    if missing:
+        st.warning(f"Missing columns were added as NaN: {missing[:15]}" + (" ..." if len(missing) > 15 else ""))
+        for c in missing:
+            X[c] = np.nan
+
+    # Reorder columns exactly as training
+    X = X[model_cols]
+
+    # --- Predict ---
+    try:
+        probs = model.predict_proba(X)[:, 1]
+        out = df_in.copy()
+        out["predicted_probability"] = probs
+
+        st.subheader("Predictions")
+        st.dataframe(out.head())
+
+        # Download
+        csv_bytes = out.to_csv(index=False).encode("utf-8")
+        st.download_button(
+            "Download predictions CSV",
+            data=csv_bytes,
+            file_name="predictions.csv",
+            mime="text/csv",
+        )
+
+    except Exception as e:
+        st.error("Prediction failed. This usually means the uploaded CSV doesn't match what the pipeline expects.")
+        st.exception(e)
+
+
 # =============================
 # Load university data (SAT/rank/acceptance rate)
 # =============================
