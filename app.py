@@ -101,6 +101,22 @@ SAT_total = st.number_input("SAT_total", 400, 1600, 1300, 10)
 GPA_unweighted = st.number_input("GPA_unweighted", 0.0, 4.0, 3.7, 0.01)
 EC_score = st.slider("EC_score (1–5)", 1, 5, 3)
 Income_level = st.slider("Income_level (1–4)", 1, 4, 3)
+# State / International
+state_or_international = st.selectbox(
+    "State (if US citizen) or International",
+    [
+        "international",
+        "Alabama","Alaska","Arizona","Arkansas","California","Colorado","Connecticut","Delaware",
+        "Florida","Georgia","Hawaii","Idaho","Illinois","Indiana","Iowa","Kansas","Kentucky","Louisiana",
+        "Maine","Maryland","Massachusetts","Michigan","Minnesota","Mississippi","Missouri","Montana",
+        "Nebraska","Nevada","New Hampshire","New Jersey","New Mexico","New York","North Carolina",
+        "North Dakota","Ohio","Oklahoma","Oregon","Pennsylvania","Rhode Island","South Carolina",
+        "South Dakota","Tennessee","Texas","Utah","Vermont","Virginia","Washington","West Virginia",
+        "Wisconsin","Wyoming"
+    ],
+    index=0
+)
+
 
 gender = st.selectbox("gender", ["female", "male", "other"])
 major = st.text_input("major", "Computer Science")
@@ -122,6 +138,9 @@ row = {
     "gender": gender,
     "major": major,
     "university": university,
+    "state_or_international": state_or_international,
+}
+
 }
 
 # Add university numeric features to the row
