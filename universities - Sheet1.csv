@@ -1,0 +1,197 @@
+University,official_accept_rate,official_median_SAT,ranking
+Stanford University,0.04,1550,3
+Yale University,0.04,1540,21
+Harvard University,0.04,1550,5
+University of California - Berkeley,0.11,1530,17
+University of Pennsylvania,0.05,1550,15
+Princeton University,0.05,1550,25
+Columbia University,0.04,1550,38
+Cornell University,0.09,1540,16
+Massachusetts Institute of Technology,0.05,1560,1
+Brown University,0.05,1540,69
+University of Southern California,0.1,1500,146
+University of California - Los Angeles,0.09,1450,46
+Duke University,0.06,1540,62
+Northwestern University,0.08,1540,42
+Northeastern University,0.05,1490,384
+University of Michigan - Ann Arbor,0.16,1460,45
+University of California - San Diego,0.27,1410,66
+New York University,0.09,1520,55
+Johns Hopkins,0.06,1550,24
+Dartmouth College,0.05,1540,247
+University of California - Santa Barbara,0.33,1400,179
+Vanderbilt University,0.06,1540,250
+Washington University - St Louis,0.12,1540,167
+Georgia Institute of Technology,0.14,1480,123
+University of Illinois - Urbana Champaign,0.42,1440,70
+Carnegie Mellon,0.12,1540,52
+University of Chicago,0.04,1550,13
+University of Virginia,0.17,1480,275
+Rice University,0.08,1550,119
+University of California - Davis,0.42,1360,114
+Boston University,0.11,1480,88
+University of North Carolina - Chapel Hill,0.15,1480,140
+University of Texas - Austin,0.27,1390,68
+California Institute of Technology,0.03,NaN,10
+Tufts University,0.11,1510,334
+University of California - Irvine,0.29,1380,293
+University of Maryland - College Park,0.45,1460,207
+Georgetown University,0.13,1490,285
+Purdue University,0.5,1370,88
+University of Washington - Seattle,0.39,NaN,81
+Emory University,0.11,1520,182
+Case Western University,0.37,1510,294
+Fordham University,0.59,1410,1001
+Pennsylvania State,0.61,1330,82
+University of Wisconsin - Madison,0.45,1460,110
+Williams College,0.08,1540,325
+University of Notre Dame,0.11,1520,294
+University of Pittsburgh,0.58,1360,281
+Amherst College,0.09,1540,326
+Swarthmore College,0.07,1540,875
+George Washington University,0.47,1430,358
+University of California - Santa Cruz,0.66,1320,458
+University of Florida,0.24,1400,212
+Pomona College,0.07,1540,NaN
+Boston College,0.16,1500,526
+University of Rochester,0.4,1490,236
+University of Massachusetts - Amherst,0.6,1420,247
+Rutgers University,0.58,1410,328
+University of Minnesota - Twin Cities,0.8,1410,210
+Ohio State,0.61,1400,190
+University of Miami,0.19,1400,314
+Virginia Institute of Technology,0.55,1360,358
+Indiana University Bloomington,0.78,1290,306
+California Polytechnic State University,0.31,1320,1300
+Wesleyan University,0.16,1490,876
+University of Georgia,0.38,1370,525
+Binghamton University,0.39,1410,1100
+University of California - Riverside,0.76,1270,440
+Texas A&M,0.57,1270,144
+Arizona State,0.9,1230,173
+University of Colorado - Boulder,0.78,1340,299
+Tulane University,0.14,1460,597
+Bowdoin College,0.07,1520,NaN
+Harvey Mudd College,0.13,1540,NaN
+Michigan State,0.85,1260,161
+Stony Brook University,0.49,1420,452
+Barnard College,0.09,1520,NaN
+San Diego State University,0.36,1210,1102
+Rochester Institute of Technology,0.67,1470,975
+Rensselaer Polytechnic Institute,0.63,1450,695
+Drexel University,0.79,1340,715
+Vassar College,0.19,1500,NaN
+University of Alabama,0.77,1270,925
+Santa Clara University,0.48,1420,125
+University of Connecticut,0.52,1340,534
+William & Mary,0.34,1470,1099
+American University,0.62,1370,587
+Lehigh University,0.26,1440,668
+Villanova University,0.27,1450,1450
+North Carolina State,0.5,1100,272
+San Jose State University,0.85,1210,1175
+University of Vermont,0.65,1360,1100
+University of Richmond,0.22,1480,NaN
+University of Texas - Dallas,0.65,1280,597
+University of South Florida,0.43,1220,654
+Syracuse University,0.46,1360,745
+Trinity University,0.26,1400,275
+Brandeis University,0.4,1470,746
+Temple University,0.8,NaN,724
+Reed College,0.25,1420,NaN
+Colgate University,0.14,1500,NaN
+Loyola University Chicago,0.82,1260,1102
+Loyola Marymount University,0.45,1350,NaN
+University of Oregon,0.88,1260,757
+Smith College,0.21,1490,630
+California State University - Long Beach,0.46,1150,1450
+Grinnel College,0.15,1490,NaN
+University of California - Merced,0.91,1080,NaN
+Wake Forest University,0.22,1470,797
+Mount Holyoke College,0.36,1460,NaN
+Colby College,0.07,1510,NaN
+University of Arizona,0.86,1290,287
+Worcester Polytechnic Institute,0.6,1380,888
+Baylor University,0.51,1300,1100
+University at Buffalo,0.74,1290,410
+Oberlin College,0.34,1450,NaN
+Carleton College,0.2,1510,NaN
+Claremont McKenna College,0.1,1530,NaN
+Oxford University,0.13,NaN,4
+Wellesley College,0.14,1520,275
+University of Central Florida,0.4,1260,707
+University of Toronto,NaN,1500,29
+Pepperdine University,0.63,1370,NaN
+University of Tennessee - Knoxville,0.42,1280,607
+Middlebury College,0.11,1500,NaN
+Howard University,0.41,1210,1100
+Occidental College,0.44,1440,NaN
+California State Polytechnic University - Pomona,0.75,1140,NaN
+University College London,0.23,NaN,9
+DePaul University,0.76,1240,625
+University of Delaware,0.71,1280,553
+Clemson University,0.38,1320,975
+Hamilton College,0.14,1500,NaN
+George Mason University,0.87,1270,966
+Macalester College,0.29,1440,NaN
+McGill University,0.41,1380,27
+Bates College,0.13,1460,NaN
+Florida State,0.24,1350,549
+University of Iowa,0.84,1230,530
+University of South Carolina,0.6,1270,628
+Kenyon College,0.31,1420,NaN
+Southern Methodist University,0.63,1420,1100
+University of St Andrews,0.35,NaN,113
+Bucknell University,0.29,1400,NaN
+Marquette University,0.81,1290,1300
+Imperial College London,0.1,NaN,2
+London School of Economics,0.16,NaN,56
+James Madison University,0.72,1250,NaN
+Stevens Institute of Technology,0.48,1440,673
+Bard College,0.52,1380,NaN
+University of Albany,0.69,1230,925
+Georgia State,0.55,1060,788
+Colorado State,0.89,1170,458
+Denison University,0.17,1410,NaN
+Lafayette College,0.31,1430,NaN
+University of Oklahoma,0.77,1240,664
+Pace University,0.76,1260,NaN
+Colorado School of Mines,0.61,1400,571
+Oregon State,0.77,1290,624
+University of Missouri,0.78,1230,697
+University of Illinois - Chicago,0.77,1240,334
+Colorado College,0.18,1340,NaN
+Kings College London,0.13,NaN,31
+Bryn Mawr College,0.29,1390,NaN
+Chapman University,0.65,1350,NaN
+Texas Christian University,0.44,1250,NaN
+Spelman College,0.25,1220,NaN
+Babson College,0.17,1460,NaN
+Virginia Commonwealth University,0.93,1130,926
+Scripps College,0.38,1500,NaN
+University of Utah,0.86,1280,540
+Auburn University,0.46,1320,878
+Union College,0.44,1390,NaN
+New Jersey Institute of Technology,0.65,1330,766
+Hunter College,0.54,1280,NaN
+University of Maryland - Baltimore County,0.72,1320,820
+University of New Hampshire,0.88,1210,1100
+Skidmore College,0.21,1390,NaN
+Lewis & Clark College,0.78,1330,NaN
+University of British Columbia,0.54,1350,40
+Haverford College,0.12,1510,NaN
+University of Massachusetts - Boston,0.84,1190,980
+Connecticut College,0.37,1430,NaN
+College of the Holy Cross,0.18,1340,NaN
+Rose-Hulman Institute of Technology,0.77,1420,NaN
+The College of Wooster,0.6,1330,NaN
+Embry-Riddle Aeronautical University,0.65,1260,NaN
+St. John's University,0.83,1240,NaN
+Cambridge University,0.16,NaN,6
+Washington State,0.87,1130,423
+University of Denver,0.78,1320,1100
+Clarkson University,0.77,1300,970
+University of Kentucky,0.93,1180,786
+United States Military Academy - West Point,0.12,1330,1235
+Olin College of Engineering,0.25,1520,NaN
+Sarah Lawrence College,0.62,1360,NaN
