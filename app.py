@@ -6,6 +6,9 @@ import json
 
 st.set_page_config(page_title="Admissions Predictor", layout="centered")
 
+def to_dense_func(X):
+    return X.toarray() if hasattr(X, "toarray") else X
+
 # =============================
 # Load model + expected columns
 # =============================
