@@ -141,7 +141,6 @@ row = {
     "state_or_international": state_or_international,
 }
 
-}
 
 # Add university numeric features to the row
 # (keeps ALL columns from the CSV as features)
