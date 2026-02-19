@@ -105,7 +105,7 @@ Income_level = st.slider("Income_level (1–4)", 1, 4, 3)
 state_or_international = st.selectbox(
     "State (if US citizen) or International",
     [
-        "international",
+        "International",
         "Alabama","Alaska","Arizona","Arkansas","California","Colorado","Connecticut","Delaware",
         "Florida","Georgia","Hawaii","Idaho","Illinois","Indiana","Iowa","Kansas","Kentucky","Louisiana",
         "Maine","Maryland","Massachusetts","Michigan","Minnesota","Mississippi","Missouri","Montana",
