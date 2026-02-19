@@ -159,6 +159,14 @@ df_input = pd.DataFrame([row]).reindex(columns=model_cols, fill_value=np.nan)
 if st.button("Predict Admission Probability"):
     p = float(model.predict_proba(df_input)[0, 1])
 
+    # Adjust toward official admit rate to correct dataset bias
+alpha = 0.6  # 60% model, 40% official prior (tune 0.5–0.8)
+
+if "official_accept_rate" in df_input.columns:
+    prior = float(df_input.loc[0, "official_accept_rate"])
+    p = alpha * p + (1 - alpha) * prior
+
+
     if p < 0.25:
         tier = "High Reach"
     elif p < 0.45:
