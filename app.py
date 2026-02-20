@@ -159,30 +159,14 @@ df_input = pd.DataFrame([row]).reindex(columns=model_cols, fill_value=np.nan)
 if st.button("Predict Admission Probability"):
     p = float(model.predict_proba(df_input)[0, 1])
 
-    # Shrink toward official admit rate
-    alpha = 0.6  # tune 0.4–0.8
-    if "official_accept_rate" in df_input.columns and pd.notna(df_input.loc[0, "accept_rate"]):
-        prior = float(df_input.loc[0, "accept_rate"])
-        # if prior is 5 not 0.05, convert
+    alpha = 0.6
+    prior = uni_row.get("official_accept_rate", None)
+    if prior is not None and not pd.isna(prior):
+        prior = float(prior)
         if prior > 1:
             prior = prior / 100.0
         p = alpha * p + (1 - alpha) * prior
 
-    # Show result
     st.subheader("Result")
     st.metric("Acceptance Probability", f"{p:.1%}")
-
-    if p < 0.25:
-        tier = "High Reach"
-    elif p < 0.45:
-        tier = "Reach"
-    elif p < 0.70:
-        tier = "Target"
-    else:
-        tier = "Safety"
-
-    st.write("Tier:", tier)
-
-    # Debug (remove later)
-    st.write("Official accept rate used:", df_input.loc[0, "accept_rate"] if "accept_rate" in df_input.columns else None)
 
