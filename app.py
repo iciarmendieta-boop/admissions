@@ -158,6 +158,10 @@ df_input = pd.DataFrame([row]).reindex(columns=model_cols, fill_value=np.nan)
 # =============================
 if st.button("Predict Admission Probability"):
     p = float(model.predict_proba(df_input)[0, 1])
+    alpha = 0.6
+if "official_accept_rate" in df_input.columns and pd.notna(df_input.loc[0, "official_accept_rate"]):
+    prior = float(df_input.loc[0, "official_accept_rate"])
+    p = alpha * p + (1 - alpha) * prior
 
 
 
