@@ -161,8 +161,8 @@ if st.button("Predict Admission Probability"):
 
     # Shrink toward official admit rate
     alpha = 0.6  # tune 0.4–0.8
-    if "official_accept_rate" in df_input.columns and pd.notna(df_input.loc[0, "official_accept_rate"]):
-        prior = float(df_input.loc[0, "official_accept_rate"])
+    if "official_accept_rate" in df_input.columns and pd.notna(df_input.loc[0, "accept_rate"]):
+        prior = float(df_input.loc[0, "accept_rate"])
         # if prior is 5 not 0.05, convert
         if prior > 1:
             prior = prior / 100.0
@@ -184,5 +184,5 @@ if st.button("Predict Admission Probability"):
     st.write("Tier:", tier)
 
     # Debug (remove later)
-    st.write("Official accept rate used:", df_input.loc[0, "official_accept_rate"] if "official_accept_rate" in df_input.columns else None)
+    st.write("Official accept rate used:", df_input.loc[0, "accept_rate"] if "accept_rate" in df_input.columns else None)
 
