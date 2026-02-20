@@ -158,13 +158,19 @@ df_input = pd.DataFrame([row]).reindex(columns=model_cols, fill_value=np.nan)
 # =============================
 if st.button("Predict Admission Probability"):
     p = float(model.predict_proba(df_input)[0, 1])
-    alpha = 0.6
-if "official_accept_rate" in df_input.columns and pd.notna(df_input.loc[0, "official_accept_rate"]):
-    prior = float(df_input.loc[0, "official_accept_rate"])
-    p = alpha * p + (1 - alpha) * prior
 
+    # Shrink toward official admit rate
+    alpha = 0.6  # tune 0.4–0.8
+    if "official_accept_rate" in df_input.columns and pd.notna(df_input.loc[0, "official_accept_rate"]):
+        prior = float(df_input.loc[0, "official_accept_rate"])
+        # if prior is 5 not 0.05, convert
+        if prior > 1:
+            prior = prior / 100.0
+        p = alpha * p + (1 - alpha) * prior
 
-
+    # Show result
+    st.subheader("Result")
+    st.metric("Acceptance Probability", f"{p:.1%}")
 
     if p < 0.25:
         tier = "High Reach"
@@ -175,7 +181,8 @@ if "official_accept_rate" in df_input.columns and pd.notna(df_input.loc[0, "offi
     else:
         tier = "Safety"
 
-    st.subheader("Result")
-    st.metric("Acceptance Probability", f"{p:.1%}")
     st.write("Tier:", tier)
+
+    # Debug (remove later)
+    st.write("Official accept rate used:", df_input.loc[0, "official_accept_rate"] if "official_accept_rate" in df_input.columns else None)
 
