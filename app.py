@@ -12,7 +12,13 @@ def to_dense_func(X):
 # =============================
 # Load model + expected columns
 # =============================
-model = joblib.load("admissions_model.joblib")
+bundle = joblib.load("admissions_model (1).joblib")
+prep = bundle["prep"]
+model = bundle["model"]
+
+# df_input must have EXACT columns = bundle["columns"] (missing columns should be added as NaN)
+Xt = prep.transform(df_input)
+proba = model.predict_proba(Xt)[:, 1]
 
 with open("model_columns.json", "r") as f:
     model_cols = json.load(f)
