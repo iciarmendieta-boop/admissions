@@ -6,9 +6,6 @@ import json
 
 st.set_page_config(page_title="Admissions Predictor", layout="centered")
 
-def to_dense_func(X):
-    return X.toarray() if hasattr(X, "toarray") else X
-
 # =============================
 # Load model + expected columns
 # =============================
@@ -16,13 +13,45 @@ bundle = joblib.load("admissions_model (1).joblib")
 prep = bundle["prep"]
 model = bundle["model"]
 
-# df_input must have EXACT columns = bundle["columns"] (missing columns should be added as NaN)
-Xt = prep.transform(df_input)
-proba = model.predict_proba(Xt)[:, 1]
-
 with open("model_columns.json", "r") as f:
     model_cols = json.load(f)
 
+# Infer the university column name expected by the model
+UNI_COL = "University" if "University" in model_cols else ("university" if "university" in model_cols else None)
+if UNI_COL is None:
+    st.error("Your model_columns.json does not include a University/university column. Check training artifacts.")
+    st.stop()
+
+# Infer the state column name expected by the model
+STATE_COL = "state_or_international" if "state_or_international" in model_cols else (
+    "State_or_international" if "State_or_international" in model_cols else None
+)
+
+# =============================
+# Load university data
+# =============================
+uni_df = pd.read_csv("universities - Sheet1.csv")
+
+uni_name_col = None
+for cand in ["university", "University", "school", "School", "Name", "name", "Institution", "institution"]:
+    if cand in uni_df.columns:
+        uni_name_col = cand
+        break
+
+if uni_name_col is None:
+    st.error(f"Could not find a university-name column in your CSV. Columns found: {list(uni_df.columns)}")
+    st.stop()
+
+uni_df[uni_name_col] = uni_df[uni_name_col].astype(str).str.replace(r"\s+", " ", regex=True).str.strip()
+
+# =============================
+# UI
+# =============================
+st.title("🎓 University Admissions Predictor")
+
+# -----------------------------
+# Batch prediction (CSV)
+# -----------------------------
 st.header("Batch prediction (CSV)")
 
 uploaded_file = st.file_uploader(
@@ -36,7 +65,6 @@ if uploaded_file is not None:
     st.subheader("Preview")
     st.dataframe(df_in.head())
 
-    # --- Align to training columns ---
     X = df_in.copy()
 
     # Drop extra cols not used by the model
@@ -55,16 +83,17 @@ if uploaded_file is not None:
     # Reorder columns exactly as training
     X = X[model_cols]
 
-    # --- Predict ---
+    # Predict (IMPORTANT: preprocess first)
     try:
-        probs = model.predict_proba(X)[:, 1]
+        Xt = prep.transform(X)
+        probs = model.predict_proba(Xt)[:, 1]
+
         out = df_in.copy()
         out["predicted_probability"] = probs
 
         st.subheader("Predictions")
         st.dataframe(out.head())
 
-        # Download
         csv_bytes = out.to_csv(index=False).encode("utf-8")
         st.download_button(
             "Download predictions CSV",
@@ -74,44 +103,26 @@ if uploaded_file is not None:
         )
 
     except Exception as e:
-        st.error("Prediction failed. This usually means the uploaded CSV doesn't match what the pipeline expects.")
+        st.error("Prediction failed. This usually means the uploaded CSV doesn't match what the preprocessor expects.")
         st.exception(e)
 
+st.divider()
 
-# =============================
-# Load university data (SAT/rank/acceptance rate)
-# =============================
-uni_df = pd.read_csv("universities - Sheet1.csv")
+# -----------------------------
+# Single prediction
+# -----------------------------
+st.header("Single prediction")
 
-# Try to find the university name column without you renaming anything
-uni_name_col = None
-for cand in ["university", "University", "school", "School", "Name", "name", "Institution", "institution"]:
-    if cand in uni_df.columns:
-        uni_name_col = cand
-        break
-
-if uni_name_col is None:
-    st.error(f"Could not find a university-name column in your CSV. Columns found: {list(uni_df.columns)}")
-    st.stop()
-
-# Clean names
-uni_df[uni_name_col] = uni_df[uni_name_col].astype(str).str.replace(r"\s+", " ", regex=True).str.strip()
-
-# =============================
-# UI
-# =============================
-st.title("🎓 University Admissions Predictor")
-
-st.header("Student Profile")
+st.subheader("Student Profile")
 SAT_total = st.number_input("SAT_total", 400, 1600, 1300, 10)
 GPA_unweighted = st.number_input("GPA_unweighted", 0.0, 4.0, 3.7, 0.01)
 EC_score = st.slider("EC_score (1–5)", 1, 5, 3)
 Income_level = st.slider("Income_level (1–4)", 1, 4, 3)
-# State / International
+
 state_or_international = st.selectbox(
     "State (if US citizen) or International",
     [
-        "International",
+        "international",
         "Alabama","Alaska","Arizona","Arkansas","California","Colorado","Connecticut","Delaware",
         "Florida","Georgia","Hawaii","Idaho","Illinois","Indiana","Iowa","Kansas","Kentucky","Louisiana",
         "Maine","Maryland","Massachusetts","Michigan","Minnesota","Mississippi","Missouri","Montana",
@@ -123,19 +134,14 @@ state_or_international = st.selectbox(
     index=0
 )
 
-
 gender = st.selectbox("gender", ["female", "male", "other"])
 major = st.text_input("major", "Computer Science")
 
-st.header("University")
+st.subheader("University")
 university = st.selectbox("Select University", sorted(uni_df[uni_name_col].unique()))
-
-# Grab that university’s features (SAT/rank/acceptance, etc.)
 uni_row = uni_df[uni_df[uni_name_col] == university].iloc[0].to_dict()
 
-# =============================
-# Build prediction row
-# =============================
+# Build row
 row = {
     "SAT_total": SAT_total,
     "GPA_unweighted": GPA_unweighted,
@@ -143,36 +149,37 @@ row = {
     "Income_level": Income_level,
     "gender": gender,
     "major": major,
-    "university": university,
-    "state_or_international": state_or_international,
+    UNI_COL: university,  # <-- FIXED: match training column name
 }
 
-st.write("Selected university:", university)
-st.write("University row used:", uni_row)
+# Optional state column if your model expects it
+if STATE_COL is not None:
+    row[STATE_COL] = state_or_international
 
-
-
-# Add university numeric features to the row
-# (keeps ALL columns from the CSV as features)
+# Add all university features from your CSV (safe; extras will be dropped by reindex)
 row.update(uni_row)
 
-# Put into DataFrame and align columns exactly as model expects
 df_input = pd.DataFrame([row]).reindex(columns=model_cols, fill_value=np.nan)
 
-# =============================
-# Predict
-# =============================
+with st.expander("Debug: model input row"):
+    st.dataframe(df_input)
+
 if st.button("Predict Admission Probability"):
-    p = float(model.predict_proba(df_input)[0, 1])
+    try:
+        Xt = prep.transform(df_input)
+        p = float(model.predict_proba(Xt)[0, 1])
 
-    alpha = 0.6
-    prior = uni_row.get("official_accept_rate", None)
-    if prior is not None and not pd.isna(prior):
-        prior = float(prior)
-        if prior > 1:
-            prior = prior / 100.0
-        p = alpha * p + (1 - alpha) * prior
+        # Optional blending with official accept rate (if present)
+        alpha = 0.6
+        prior = uni_row.get("official_accept_rate", None)
+        if prior is not None and not pd.isna(prior):
+            prior = float(prior)
+            if prior > 1:
+                prior = prior / 100.0
+            p = alpha * p + (1 - alpha) * prior
 
-    st.subheader("Result")
-    st.metric("Acceptance Probability", f"{p:.1%}")
-
+        st.subheader("Result")
+        st.metric("Acceptance Probability", f"{p:.1%}")
+    except Exception as e:
+        st.error("Prediction failed for the single row.")
+        st.exception(e)
