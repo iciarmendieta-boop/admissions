@@ -114,6 +114,29 @@ def train_model():
     train_idx, _ = next(gss.split(X, y, groups=groups))
     X_train = X.iloc[train_idx]
     y_train = y.iloc[train_idx]
+    df_train = df.iloc[train_idx]
+
+    # ── Survivorship bias correction ──────────────────────────────────────────
+    # Students who self-report results skew towards those who got in.
+    # Harvard shows 23% accept rate in the data vs 4% official.
+    # Fix: reweight each university's samples so the weighted accept rate
+    # matches the official rate. Rejects get weight=1, accepts get w_a < 1.
+    weights = np.ones(len(df_train))
+    for uni, grp in df_train.groupby('University'):
+        official_rate = grp['official_accept_rate'].iloc[0]
+        if pd.isna(official_rate): continue
+        data_rate = grp['Decision'].mean()
+        if data_rate <= 0 or data_rate >= 1: continue
+        official_rate = np.clip(official_rate, 0.01, 0.99)
+        n_acc = int(grp['Decision'].sum())
+        n_rej = len(grp) - n_acc
+        if n_acc == 0 or n_rej == 0: continue
+        w_a = (official_rate * n_rej) / ((1 - official_rate) * n_acc)
+        w_a = np.clip(w_a, 0.05, 20.0)
+        acc_pos = np.where(df_train.index.isin(grp[grp['Decision']==1].index))[0]
+        rej_pos = np.where(df_train.index.isin(grp[grp['Decision']==0].index))[0]
+        weights[acc_pos] = w_a
+        weights[rej_pos] = 1.0
 
     num_pipe   = Pipeline([("imp", SimpleImputer(strategy="median"))])
     preprocess = ColumnTransformer([("num", num_pipe, FEATURES)],
@@ -130,10 +153,10 @@ def train_model():
     base = HistGradientBoostingClassifier(
         learning_rate=0.05, max_depth=5, max_iter=500,
         min_samples_leaf=25, random_state=42, monotonic_cst=mono)
-    base.fit(Xt_train, y_train)
+    base.fit(Xt_train, y_train, sample_weight=weights)
 
     cal = CalibratedClassifierCV(estimator=base, method="isotonic", cv=5)
-    cal.fit(Xt_train, y_train)
+    cal.fit(Xt_train, y_train, sample_weight=weights)
 
     uni_list = sorted(universities['University'].dropna().unique().tolist())
     uni_lookup = universities.set_index('University').to_dict('index')
