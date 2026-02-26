@@ -293,7 +293,7 @@ if run:
     """, unsafe_allow_html=True)
 
     with st.expander("📊 Score Breakdown", expanded=True):
-        sat_gap = sat - (u_sat or sat)
+        int(sat - (u_sat or sat))
         gc = "gap-pos" if sat_gap > 0 else "gap-neg"
         income_labels = {1:"Very Low",2:"Low",3:"Middle",4:"High"}
         rows_html = [
