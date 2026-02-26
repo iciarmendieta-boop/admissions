@@ -62,9 +62,9 @@ div[data-testid="stButton"] > button:hover { opacity:0.88; }
 
 # ── Train model at startup (cached — runs once) ───────────────────────────────
 FEATURES = ['sat_gap','GPA_unweighted','SAT_total','official_median_SAT',
-            'official_accept_rate','ranking','rank_inv','selectivity',
+            'official_accept_rate','ranking','selectivity',
             'Job_years','Sports_years','Internship_flag','Award_flag',
-            'EC_score','Leadership_flag','First_gen','Legacy','Income_level']
+            'EC_score','First_gen','Legacy','Income_level']
 
 NAME_FIXES = {
     "University of Washington - Seattle": "University of Washington",
@@ -95,12 +95,11 @@ def train_model():
 
     student_cols = ['ID','GPA_unweighted','SAT_total','Income_level','Job_years',
                     'Sports_years','Internship_flag','Award_flag','EC_score',
-                    'Leadership_flag','First_gen','Legacy']
+                    'First_gen','Legacy']
     df = df_long.merge(students[student_cols], on='ID', how='left')
     df = df.merge(universities, on='University', how='left')
 
     df['sat_gap']     = df['SAT_total'] - df['official_median_SAT']
-    df['rank_inv']    = 1.0 / df['ranking'].replace(0, np.nan)
     df['selectivity'] = 1.0 - df['official_accept_rate']
 
     df = df.dropna(subset=['SAT_total','GPA_unweighted','official_median_SAT','Decision']).copy()
@@ -186,7 +185,7 @@ def get_uni_stats(uni):
             info.get('official_accept_rate'), 
             info.get('ranking'))
 
-def build_row(sat, gpa, ec, income, job, sport, internship, award, leadership, first_gen, legacy, uni):
+def build_row(sat, gpa, ec, income, job, sport, internship, award, first_gen, legacy, uni):
     u_sat, u_rate, u_rank = get_uni_stats(uni)
     return {
         'sat_gap':              sat - (u_sat or sat),
@@ -195,14 +194,12 @@ def build_row(sat, gpa, ec, income, job, sport, internship, award, leadership, f
         'official_median_SAT':  u_sat or sat,
         'official_accept_rate': u_rate or 0.5,
         'ranking':              u_rank or 100,
-        'rank_inv':             1.0 / (u_rank or 100),
         'selectivity':          1.0 - (u_rate or 0.5),
         'Job_years':            job,
         'Sports_years':         sport,
         'Internship_flag':      1 if internship == "Yes" else 0,
         'Award_flag':           1 if award == "Yes" else 0,
         'EC_score':             ec,
-        'Leadership_flag':      1 if leadership == "Yes" else 0,
         'First_gen':            1 if first_gen == "Yes" else 0,
         'Legacy':               1 if legacy == "Yes" else 0,
         'Income_level':         income,
@@ -248,13 +245,11 @@ with ex2:
 with ex3:
     job_years = st.slider("Job (years)", 0, 4, 0)
 
-ex4, ex5, ex6 = st.columns(3)
+ex4, ex5 = st.columns(2)
 with ex4:
     internship = st.radio("Internship?", ["No", "Yes"], horizontal=True)
 with ex5:
     award = st.radio("Award?", ["No", "Yes"], horizontal=True)
-with ex6:
-    leadership = st.radio("Leadership?", ["No", "Yes"], horizontal=True)
 
 st.markdown('<div class="section-label">Background</div>', unsafe_allow_html=True)
 bg1, bg2, bg3, bg4 = st.columns(4)
@@ -273,7 +268,7 @@ run = st.button("Estimate My Chances →")
 # ── Results ───────────────────────────────────────────────────────────────────
 if run:
     row  = build_row(sat, gpa, ec_score, income, job_years, sports_years,
-                     internship, award, leadership, first_gen, legacy, university)
+                     internship, award, first_gen, legacy, university)
     prob = predict(row)
     pct  = prob * 100
     vlabel, vclass = verdict(prob)
@@ -305,7 +300,6 @@ if run:
             ("Job experience", f"{job_years} yrs", ""),
             ("Internship", internship, ""),
             ("Award", award, ""),
-            ("Leadership", leadership, ""),
             ("First-generation", first_gen, ""),
             ("Legacy", legacy, ""),
             ("Income level", income_labels[income], ""),
@@ -330,7 +324,7 @@ if run:
             u_sat2, u_rate2, u_rank2 = get_uni_stats(u)
             if u_sat2 is None: continue
             r = build_row(sat, gpa, ec_score, income, job_years, sports_years,
-                          internship, award, leadership, first_gen, legacy, u)
+                          internship, award, first_gen, legacy, u)
             p = predict(r)
             vl, vc = verdict(p)
             results.append({"uni": u, "prob": p, "vl": vl, "vc": vc, "col": meter_color(p)})
